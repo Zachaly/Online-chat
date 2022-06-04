@@ -1,0 +1,30 @@
+﻿@model ChatViewModel
+
+<div>
+    <div>
+        <ul>
+            @foreach(var contact in Model.Contacts)
+            {
+                <li>@contact.Name</li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        @foreach(var message in Model.Messages)
+        {
+            string msgclass;
+            if (message.Sender == User.Identity.Name)
+            {
+                msgclass = "user-msg";
+            }
+            else
+                msgclass = "sender-msg";
+
+            <div class="@(msgclass + " message")">
+                <p>@message.Content</p>
+                <div class="send-date">@message.Created.ToString()</div>
+            </div>
+        }
+    </div>
+</div>

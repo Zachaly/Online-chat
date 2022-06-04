@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Authorisation" asp-action="Logout">Logout</a>
+            }
+            else
+            {
+                <a asp-controller="Authorisation" asp-action="Login">Login</a>
+                <a asp-controller="Authorisation" asp-action="Register">Register</a>
+            }
+        </nav>
+        <div>
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

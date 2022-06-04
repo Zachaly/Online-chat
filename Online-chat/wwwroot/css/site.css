@@ -1,0 +1,32 @@
+﻿*{ padding: 0; margin: 0; box-sizing: border-box;}
+
+body{
+    background-color: rgb(31, 30, 30);
+    font-family: Arial;
+    color: aliceblue;
+}
+
+nav{
+    height: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+nav a{
+    display: block;
+    text-decoration:none;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(37, 52, 95);
+    border: 3px solid rgb(41, 65, 132);
+    color: aliceblue;
+    margin: 5px;
+}
+
+nav a:hover {
+    background-color: rgb(41, 65, 132);
+    border-color: rgb(37, 52, 95);
+}
