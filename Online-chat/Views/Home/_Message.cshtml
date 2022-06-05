@@ -1,9 +1,13 @@
 ﻿@model MessageViewModel
 
 <div>
-    <form asp-controller="Home" asp-action="SendMessage" method="post">
-        <input asp-for="Content"/>
+    <form asp-controller="Home" asp-action="Message" method="post">
+        <div>
+            <textarea asp-for="Content">
+
+            </textarea>
+            <button type="submit">Send</button>
+        </div>
         <input asp-for="Image" />
-        <button type="submit">Submit</button>
     </form>
 </div>

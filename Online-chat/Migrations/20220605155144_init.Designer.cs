@@ -12,7 +12,7 @@ using Online_chat.Data;
 namespace Online_chat.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220604002212_init")]
+    [Migration("20220605155144_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,9 +165,6 @@ namespace Online_chat.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -223,8 +220,6 @@ namespace Online_chat.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -234,6 +229,30 @@ namespace Online_chat.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Online_chat.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContactUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("Online_chat.Models.Message", b =>
@@ -254,16 +273,12 @@ namespace Online_chat.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReceiverId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
@@ -319,26 +334,11 @@ namespace Online_chat.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Online_chat.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Online_chat.Models.Contact", b =>
                 {
                     b.HasOne("Online_chat.Models.ApplicationUser", null)
                         .WithMany("Contacts")
                         .HasForeignKey("ApplicationUserId");
-                });
-
-            modelBuilder.Entity("Online_chat.Models.Message", b =>
-                {
-                    b.HasOne("Online_chat.Models.ApplicationUser", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId");
-
-                    b.HasOne("Online_chat.Models.ApplicationUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId");
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Online_chat.Models.ApplicationUser", b =>

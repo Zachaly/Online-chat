@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/messages.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/contacts.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 </head>
 <body>
     <div class="container">
@@ -19,7 +22,7 @@
                 <a asp-controller="Authorisation" asp-action="Register">Register</a>
             }
         </nav>
-        <div>
+        <div class="content">
             @RenderBody()
         </div>
     </div>

@@ -1,0 +1,27 @@
+﻿form.login {
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+    form.login div {
+        display: flex;
+        font-size: 20px;
+        justify-content: space-between;
+        max-width: 400px;
+        margin-top: 3px;
+    }
+
+    form.login input[type="submit"] {
+        width: 100%;
+        height: 40px;
+        font-size: 20px;
+        margin-top: 5px;
+        background-color: gray;
+        border: 2px solid rgb(104, 97, 97);
+        border-radius: 2px;
+    }
+
+        form.login input[type="submit"]:hover {
+            background-color: lightslategrey;
+            border-color: rgb(72, 68, 68);
+        }

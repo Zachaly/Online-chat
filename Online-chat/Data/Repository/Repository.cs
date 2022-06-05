@@ -18,6 +18,29 @@ namespace Online_chat.Data.Repository
             _appDbContext = context;
         }
 
+        public void AddContact(ApplicationUser user, ApplicationUser contact)
+        {
+            var contactModel = new Contact
+            {
+                CurrentUserId = user.Id,
+                ContactUserId = contact.Id
+            };
+
+            user.Contacts.Add(contactModel);
+            _appDbContext.Contacts.Add(contactModel);
+
+            contactModel = new Contact
+            {
+                CurrentUserId = contact.Id,
+                ContactUserId = user.Id
+            };
+            contact.Contacts.Add(contactModel);
+            _appDbContext.Contacts.Add(contactModel);
+
+            _appDbContext.Users.Update(contact);
+            _appDbContext.Users.Update(user);
+        }
+
         public void AddMessage(Message message) => _appDbContext.Messages.Add(message);
         
         public void DeleteMessage(int id)
@@ -28,8 +51,11 @@ namespace Online_chat.Data.Repository
 
         public List<Message> GetMessages(ApplicationUser receiver, ApplicationUser sender)
             => _appDbContext.Messages.
-                Where(message => message.Receiver == receiver && 
-                message.Sender == sender).
+                Where(message => 
+                (message.ReceiverId == receiver.Id && 
+                message.SenderId == sender.Id) || 
+                (message.ReceiverId == sender.Id &&
+                message.SenderId == receiver.Id)).
                 ToList();
 
         public ApplicationUser GetUser(string id) => _appDbContext.Users.Find(id);
@@ -41,5 +67,10 @@ namespace Online_chat.Data.Repository
                 return true;
             return false;
         }
+
+        public List<Contact> GetContacts(ApplicationUser user)
+            => _appDbContext.Contacts.
+            Where(contact => contact.CurrentUserId == user.Id).
+            ToList();
     }
 }

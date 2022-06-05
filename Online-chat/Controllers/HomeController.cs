@@ -16,6 +16,8 @@ namespace Online_chat.Controllers
         private IRepository _repository;
         private UserManager<ApplicationUser> _userManager;
 
+        private static ApplicationUser _currentContact;
+
         public HomeController(IRepository repository, UserManager<ApplicationUser> userManager)
         {
             _repository = repository;
@@ -36,7 +38,10 @@ namespace Online_chat.Controllers
 
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
+            currentUser.Contacts = _repository.GetContacts(currentUser);
+
             viewModel.Contacts = currentUser.Contacts.
+                Select(contact => _repository.GetUser(contact.ContactUserId)).
                 Select(contact => new ContactViewModel
                 {
                     UserName = contact.UserName,
@@ -51,13 +56,71 @@ namespace Online_chat.Controllers
             else
                 viewModel.CurrentContact = new ContactViewModel();
 
-            viewModel.Messages = _repository.GetMessages(currentUser, _repository.GetUser(contactId)).
-                Select(message => new MessageViewModel
-                {
-                    Content = message.Content,
-                }).
-                ToList();
+            _currentContact = _repository.GetUser(viewModel.CurrentContact.ContactId);
+
+            var sender = _repository.GetUser(contactId);
+
+            if (sender != null)
+                viewModel.Messages = _repository.GetMessages(sender, currentUser).
+                    Select(message => new MessageViewModel
+                    {
+                        Content = message.Content,
+                        Sender = message.SenderId,
+                        Created = message.Created,
+                    }).
+                    ToList();
+            else
+                viewModel.Messages = new List<MessageViewModel>();
+
+            viewModel.UserId = currentUser.Id;
+
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Message(MessageViewModel viewModel)
+        {
+            if (_currentContact is null)
+                return RedirectToAction("Chat");
+
+            var message = new Message
+            {
+                Content = viewModel.Content,
+                SenderId = (await _userManager.GetUserAsync(HttpContext.User)).Id,
+                ReceiverId = _currentContact?.Id,
+            };
+
+            _repository.AddMessage(message);
+
+            await _repository.SaveChanges();
+
+            return RedirectToAction("Chat", "Home", new { contactId = _currentContact.Id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Contact(ContactViewModel contactViewModel)
+        {
+            if(!_repository.GetUsers().
+                Any(user => user.UserName == contactViewModel.UserName) ||
+                (await _userManager.GetUserAsync(HttpContext.User)).Contacts.
+                Select(contact => _repository.GetUser(contact.ContactUserId)).
+                Any(user => user.UserName == contactViewModel.UserName))
+                return RedirectToAction("Chat");
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var contactId = _repository.GetUsers().First(user => user.UserName == contactViewModel.UserName).Id;
+
+            if(user.Id == contactId)
+                return RedirectToAction("Chat");
+
+            var contact = _repository.GetUser(contactId);
+
+            _repository.AddContact(user, contact);
+
+            await _repository.SaveChanges();
+
+            return RedirectToAction("Chat", "Home", new { contactId = contactId });
         }
     }
 }

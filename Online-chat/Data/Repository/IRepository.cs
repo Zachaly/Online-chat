@@ -17,5 +17,7 @@ namespace Online_chat.Data.Repository
         void DeleteMessage(int id);
         Task<bool> SaveChanges();
         ApplicationUser GetUser(string id);
+        void AddContact(ApplicationUser user, ApplicationUser contact);
+        List<Contact> GetContacts(ApplicationUser user);
     }
 }

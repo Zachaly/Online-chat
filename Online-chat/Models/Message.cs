@@ -13,7 +13,7 @@ namespace Online_chat.Models
         public string Content { get; set; } = "";
         public string Image { get; set; } = "";
         public DateTime Created { get; set; } = DateTime.Now;
-        public ApplicationUser Sender { get; set; }
-        public ApplicationUser Receiver { get; set; }
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
     }
 }

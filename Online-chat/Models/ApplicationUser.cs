@@ -12,6 +12,6 @@ namespace Online_chat.Models
         public string ProfilePicture { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<ApplicationUser> Contacts { get; set; } = new List<ApplicationUser>();
+        public List<Contact> Contacts { get; set; } = new List<Contact>();
     }
 }
