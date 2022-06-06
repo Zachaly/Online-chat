@@ -11,7 +11,8 @@ namespace Blog.Data.FileManager
     public interface IFileManager
     {
         FileStream ImageStream(string image);
-        Task<string> SaveImage(IFormFile image);
+        FileStream ProfilePictureStream(string image);
+        Task<string> SaveImage(IFormFile image, bool profilePicture = false);
         bool RemoveImage(string image);
     }
 }

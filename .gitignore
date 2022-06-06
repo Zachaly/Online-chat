@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Excluding profile pictures except default one and message images
+Online-chat/wwwroot/user-images/profile-pictures/*
+Online-chat/wwwroot/user-images/message/*
+!Online-chat/wwwroot/user-images/profile-pictures/default.jpg

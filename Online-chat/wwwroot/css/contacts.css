@@ -2,7 +2,10 @@
     max-width: 275px;
     height: 100%;
     width: 100%;
-    border: 2px solid rgb(120, 114, 114)
+    border: 2px solid rgb(120, 114, 114);
+    padding: 4px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .contacts form {
@@ -37,6 +40,11 @@
     list-style: none;
 }
 
+.contacts ul li{
+    display: flex;
+    align-items: center;
+}
+
 .contacts a {
     display: block;
     text-decoration: none;
@@ -46,4 +54,9 @@
     justify-content: center;
     align-items: center;
     color: aliceblue;
+}
+
+.contacts img{
+    width: 50px;
+    height: 50px;
 }

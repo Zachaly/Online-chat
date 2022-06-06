@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Online_chat.ViewModels
         public string ConfirmPassword { get; set; } = "";
         public string Name { get; set; } = "";
         public string LastName { get; set; } = "";
+        public IFormFile ProfilePicture { get; set; } = null;
     }
 }

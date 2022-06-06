@@ -1,3 +1,4 @@
+using Blog.Data.FileManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,7 @@ namespace Online_chat
                 option.EnableEndpointRouting = false;
             });
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 // password requirements

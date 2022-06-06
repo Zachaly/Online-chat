@@ -12,7 +12,7 @@ namespace Online_chat.ViewModels
         public string Name { get; set; } = "";
         public string LastName { get; set; } = "";
         public string UserName { get; set; } = "";
-        public IFormFile ProfilePicture { get; set; } = null;
+        public string ProfilePicture { get; set; } = "default.jpg";
         public string ContactId { get; set; }
     }
 }

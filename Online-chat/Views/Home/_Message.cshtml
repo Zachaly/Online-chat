@@ -1,7 +1,7 @@
 ﻿@model MessageViewModel
 
 <div>
-    <form asp-controller="Home" asp-action="Message" method="post">
+    <form asp-controller="Home" asp-action="Message" method="post" enctype="multipart/form-data">
         <div>
             <textarea asp-for="Content">
 

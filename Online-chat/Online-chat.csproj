@@ -7,7 +7,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\userimages\" />
+    <Folder Include="wwwroot\user-images\message\" />
+    <Folder Include="wwwroot\user-images\profile-pictures\" />
   </ItemGroup>
 
   <ItemGroup>

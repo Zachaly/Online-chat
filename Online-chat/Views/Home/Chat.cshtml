@@ -9,6 +9,10 @@
             @foreach(var contact in Model.Contacts)
             {
                 <li>
+                    @{
+                        var imgpath = $"/ProfilePicture/{contact.ProfilePicture}";
+                    }
+                    <img src="@imgpath">
                     <a asp-action="Chat" asp-controller="Home" 
                     asp-route-contactId="@contact.ContactId">
                         @contact.UserName
@@ -26,21 +30,39 @@
 
         @foreach(var message in Model.Messages)
         {
-            string msgclass = "message ";
+            string msgclass = "";
             if (message.Sender != Model.UserId)
             {
                 msgclass += "receiver-msg";
-                <div class="@msgclass">
-                    <p>@message.Content</p>
-                    <div class="send-date">@message.Created</div>
+                <div class="message">
+                    <div class="@msgclass">
+                        <p>@message.Content</p>
+                        <div class="send-date">@message.Created</div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(message.ImgString))
+                    {
+                        var imgpath = $"/Images/{message.ImgString}";
+                        <div class="@msgclass">
+                            <img src="@imgpath">
+                        </div>
+                    }
                 </div>
             }
             else
             {
                 msgclass += "sender-msg";
-                <div class="@msgclass">
-                    <div class="send-date">@message.Created</div>
-                    <p>@message.Content</p>
+                <div class="message">
+                    <div class="@msgclass">
+                        <div class="send-date">@message.Created</div>
+                        <p>@message.Content</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(message.ImgString))
+                    {
+                        var imgpath = $"/Images/{message.ImgString}";
+                        <div class="@msgclass">
+                            <img src="@imgpath">
+                        </div>
+                    }
                 </div>
             }
         }

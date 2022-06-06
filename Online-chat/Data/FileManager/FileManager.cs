@@ -12,13 +12,19 @@ namespace Blog.Data.FileManager
     public class FileManager : IFileManager
     {
         private string _imagePath;
+        private string _profilePicturePath;
 
         public FileManager(IConfiguration configuration)
-            => _imagePath = configuration["Path:Images"];
+        { 
+            _imagePath = configuration["Path:Images"];
+            _profilePicturePath = configuration["Path:ProfilePictures"];
+        }
 
         public FileStream ImageStream(string image)
             => new FileStream(Path.Combine(_imagePath, image), FileMode.Open, FileAccess.Read);
-        
+
+        public FileStream ProfilePictureStream(string image)
+            => new FileStream(Path.Combine(_profilePicturePath, image), FileMode.Open, FileAccess.Read);
 
         public bool RemoveImage(string image)
         {
@@ -38,18 +44,24 @@ namespace Blog.Data.FileManager
             }
         }
 
-        public async Task<string> SaveImage(IFormFile image)
+        public async Task<string> SaveImage(IFormFile image, bool profilePicture = false)
         {
             try
             {
-                var savePath = Path.Combine(_imagePath);
+                string savePath = "";
+
+                if (profilePicture)
+                    savePath = Path.Combine(_profilePicturePath);
+                else 
+                    savePath = Path.Combine(_imagePath);
+
                 if (!Directory.Exists(_imagePath))
                 {
                     Directory.CreateDirectory(savePath);
                 }
 
                 var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
-                var fileName = $"img_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}{mime}";
+                var fileName = $"img_{Guid.NewGuid()}{mime}";
 
                 using (var stream = new FileStream(Path.Combine(savePath, fileName), FileMode.Create))
                 {

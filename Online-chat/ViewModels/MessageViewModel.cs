@@ -13,6 +13,7 @@ namespace Online_chat.ViewModels
         [Required]
         public string Content { get; set; }
         public IFormFile Image { get; set; } = null;
+        public string ImgString { get; set; }
         public string Sender { get; set; }
         public DateTime Created { get; set; }
     }

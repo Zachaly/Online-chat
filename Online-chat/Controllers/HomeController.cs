@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Online_chat.Models;
+using Blog.Data.FileManager;
 
 namespace Online_chat.Controllers
 {
@@ -15,13 +16,15 @@ namespace Online_chat.Controllers
     {
         private IRepository _repository;
         private UserManager<ApplicationUser> _userManager;
+        private IFileManager _fileManager;
 
         private static ApplicationUser _currentContact;
 
-        public HomeController(IRepository repository, UserManager<ApplicationUser> userManager)
+        public HomeController(IRepository repository, UserManager<ApplicationUser> userManager, IFileManager fileManager)
         {
             _repository = repository;
             _userManager = userManager;
+            _fileManager = fileManager;
         }
 
         public IActionResult Index() 
@@ -47,12 +50,13 @@ namespace Online_chat.Controllers
                     UserName = contact.UserName,
                     Name = contact.FirstName,
                     LastName = contact.LastName,
-                    ContactId = contact.Id
+                    ContactId = contact.Id,
+                    ProfilePicture = contact.ProfilePicture,
                 }).
                 ToList();
 
-            if(viewModel.Contacts.Count > 0)
-                viewModel.CurrentContact = viewModel.Contacts.First();
+            if(viewModel.Contacts.Count > 0 && !string.IsNullOrEmpty(contactId))
+                viewModel.CurrentContact = viewModel.Contacts.First(contact => contact.ContactId == contactId);
             else
                 viewModel.CurrentContact = new ContactViewModel();
 
@@ -67,6 +71,7 @@ namespace Online_chat.Controllers
                         Content = message.Content,
                         Sender = message.SenderId,
                         Created = message.Created,
+                        ImgString = message.Image
                     }).
                     ToList();
             else
@@ -89,6 +94,9 @@ namespace Online_chat.Controllers
                 SenderId = (await _userManager.GetUserAsync(HttpContext.User)).Id,
                 ReceiverId = _currentContact?.Id,
             };
+
+            if (viewModel.Image != null)
+                message.Image = await _fileManager.SaveImage(viewModel.Image);
 
             _repository.AddMessage(message);
 
@@ -121,6 +129,20 @@ namespace Online_chat.Controllers
             await _repository.SaveChanges();
 
             return RedirectToAction("Chat", "Home", new { contactId = contactId });
+        }
+
+        [HttpGet("/Images/{image}")]
+        public IActionResult Image(string image)
+        {
+            var mime = image.Substring(image.LastIndexOf('.') + 1);
+            return new FileStreamResult(_fileManager.ImageStream(image), $"image/{mime}");
+        }
+
+        [HttpGet("/ProfilePicture/{image}")]
+        public IActionResult ProfilePicture(string image)
+        {
+            var mime = image.Substring(image.LastIndexOf('.') + 1);
+            return new FileStreamResult(_fileManager.ProfilePictureStream(image), $"image/{mime}");
         }
     }
 }

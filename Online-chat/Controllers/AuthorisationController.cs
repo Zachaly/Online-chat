@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Blog.Data.FileManager;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Online_chat.Data.Repository;
 using Online_chat.Models;
@@ -14,12 +15,12 @@ namespace Online_chat.Controllers
     public class AuthorisationController : Controller
     {
         private SignInManager<ApplicationUser> _signInManager;
-        private IRepository _repository;
         private UserManager<ApplicationUser> _userManager;
-        public AuthorisationController(SignInManager<ApplicationUser> signInManager, IRepository repository, UserManager<ApplicationUser> userManager)
+        private IFileManager _fileManager;
+        public AuthorisationController(SignInManager<ApplicationUser> signInManager, IFileManager fileManager, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
-            _repository = repository;
+            _fileManager = fileManager;
             _userManager = userManager;
         }
 
@@ -56,12 +57,24 @@ namespace Online_chat.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
+            if(viewModel.Password != viewModel.ConfirmPassword)
+                return RedirectToAction("Register", "Authorisation");
+
+            string profileImg;
+
+            if (viewModel.ProfilePicture != null)
+                profileImg = await _fileManager.SaveImage(viewModel.ProfilePicture, true);
+            else
+                profileImg = "default.jpg";
+            
+
             var user = new ApplicationUser
             {
                 UserName = viewModel.UserName,
                 FirstName = viewModel.Name,
-                LastName = viewModel.Name,
+                LastName = viewModel.LastName,
                 Email = viewModel.Email,
+                ProfilePicture = profileImg
             };
 
             try

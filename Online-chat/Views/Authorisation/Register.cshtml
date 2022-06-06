@@ -1,6 +1,6 @@
 ﻿@model RegisterViewModel
 
-<form asp-controller="Authorisation" asp-action="Register" class="login">
+<form asp-controller="Authorisation" asp-action="Register" class="login" enctype="multipart/form-data">
     <div>
         <label>E-mail</label>
         <input asp-for="Email"/>
@@ -19,6 +19,11 @@
     <div>
         <label>Username</label>
         <input asp-for="UserName"/>
+    </div>
+
+    <div>
+        <label>Profile Picture</label>
+        <input asp-for="ProfilePicture" />
     </div>
 
     <div>
