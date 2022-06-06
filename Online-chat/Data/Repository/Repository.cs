@@ -34,6 +34,7 @@ namespace Online_chat.Data.Repository
                 CurrentUserId = contact.Id,
                 ContactUserId = user.Id
             };
+
             contact.Contacts.Add(contactModel);
             _appDbContext.Contacts.Add(contactModel);
 
@@ -52,10 +53,8 @@ namespace Online_chat.Data.Repository
         public List<Message> GetMessages(ApplicationUser receiver, ApplicationUser sender)
             => _appDbContext.Messages.
                 Where(message => 
-                (message.ReceiverId == receiver.Id && 
-                message.SenderId == sender.Id) || 
-                (message.ReceiverId == sender.Id &&
-                message.SenderId == receiver.Id)).
+                (message.ReceiverId == receiver.Id && message.SenderId == sender.Id) || 
+                (message.ReceiverId == sender.Id && message.SenderId == receiver.Id)).
                 ToList();
 
         public ApplicationUser GetUser(string id) => _appDbContext.Users.Find(id);

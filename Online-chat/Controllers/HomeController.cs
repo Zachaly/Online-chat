@@ -2,23 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Online_chat.Data.Repository;
 using Online_chat.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Online_chat.Models;
 using Blog.Data.FileManager;
+using System;
 
 namespace Online_chat.Controllers
 {
     public class HomeController : Controller
     {
-        private IRepository _repository;
-        private UserManager<ApplicationUser> _userManager;
-        private IFileManager _fileManager;
+        private readonly IRepository _repository;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFileManager _fileManager;
 
-        private static ApplicationUser _currentContact;
+        private static ApplicationUser _currentContact; // contact currently selected in chat
 
         public HomeController(IRepository repository, UserManager<ApplicationUser> userManager, IFileManager fileManager)
         {
@@ -85,31 +84,35 @@ namespace Online_chat.Controllers
         [HttpPost]
         public async Task<IActionResult> Message(MessageViewModel viewModel)
         {
-            if (_currentContact is null)
-                return RedirectToAction("Chat");
-
-            var message = new Message
+            try
             {
-                Content = viewModel.Content,
-                SenderId = (await _userManager.GetUserAsync(HttpContext.User)).Id,
-                ReceiverId = _currentContact?.Id,
-            };
+                var message = new Message
+                {
+                    Content = viewModel.Content,
+                    SenderId = (await _userManager.GetUserAsync(HttpContext.User)).Id,
+                    ReceiverId = viewModel.Receiver,
+                };
 
-            if (viewModel.Image != null)
-                message.Image = await _fileManager.SaveImage(viewModel.Image);
+                if (viewModel.Image != null)
+                    message.Image = await _fileManager.SaveImage(viewModel.Image);
 
-            _repository.AddMessage(message);
+                _repository.AddMessage(message);
 
-            await _repository.SaveChanges();
+                await _repository.SaveChanges();
 
-            return RedirectToAction("Chat", "Home", new { contactId = _currentContact.Id });
+                return RedirectToAction("Chat", "Home", new { contactId = _currentContact.Id });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Chat");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Contact(ContactViewModel contactViewModel)
         {
             if(!_repository.GetUsers().
-                Any(user => user.UserName == contactViewModel.UserName) ||
+                Any(user => user.UserName == contactViewModel.UserName) || 
                 (await _userManager.GetUserAsync(HttpContext.User)).Contacts.
                 Select(contact => _repository.GetUser(contact.ContactUserId)).
                 Any(user => user.UserName == contactViewModel.UserName))

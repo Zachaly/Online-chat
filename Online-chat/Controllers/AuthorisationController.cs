@@ -1,22 +1,18 @@
 ﻿using Blog.Data.FileManager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Online_chat.Data.Repository;
 using Online_chat.Models;
 using Online_chat.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Online_chat.Controllers
 {
     public class AuthorisationController : Controller
     {
-        private SignInManager<ApplicationUser> _signInManager;
-        private UserManager<ApplicationUser> _userManager;
-        private IFileManager _fileManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFileManager _fileManager;
         public AuthorisationController(SignInManager<ApplicationUser> signInManager, IFileManager fileManager, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;

@@ -1,14 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Online_chat.Models
+﻿namespace Online_chat.Models
 {
-    
+    /// <summary>
+    /// Model used to connect 2 users
+    /// </summary>
     public class Contact
     {
         public int Id { get; set; }

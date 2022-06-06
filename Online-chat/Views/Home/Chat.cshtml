@@ -67,7 +67,7 @@
             }
         }
         @{
-            await Html.RenderPartialAsync("_Message", new MessageViewModel());
+            await Html.RenderPartialAsync("_Message", new MessageViewModel { Receiver = Model.CurrentContact.ContactId });
         }
     </div>
 </div>

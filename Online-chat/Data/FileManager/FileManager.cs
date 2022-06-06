@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Blog.Data.FileManager
 {
     public class FileManager : IFileManager
     {
-        private string _imagePath;
-        private string _profilePicturePath;
+        private readonly string _imagePath;
+        private readonly string _profilePicturePath;
 
         public FileManager(IConfiguration configuration)
         { 
@@ -26,30 +23,13 @@ namespace Blog.Data.FileManager
         public FileStream ProfilePictureStream(string image)
             => new FileStream(Path.Combine(_profilePicturePath, image), FileMode.Open, FileAccess.Read);
 
-        public bool RemoveImage(string image)
-        {
-            try
-            {
-                var file = Path.Combine(_imagePath, image);
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
         public async Task<string> SaveImage(IFormFile image, bool profilePicture = false)
         {
             try
             {
                 string savePath = "";
 
+                // save path differs if image is used as profile picture
                 if (profilePicture)
                     savePath = Path.Combine(_profilePicturePath);
                 else 
